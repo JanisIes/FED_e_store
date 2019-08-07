@@ -3,6 +3,12 @@ import bodyParser from 'body-parser';
 import './utils/dotenv';
 import healthCheck from './routes/healthCheck';
 import HomeRoute from './routes/HomeRoute';
+import ProductRoute from './routes/ProductRoute';
+import ManufactureRoute from './routes/ManufactureRoute';
+import CommentRoute from './routes/CommentRoute';
+import CategoryRoute from './routes/CategoryRoute';
+import OrderRoute from './routes/OrderRoute';
+import UserRoute from './routes/UserRoute';
 import defaultErrorHandler from './middlewares/defaultErrorHandler';
 import mysql from 'mysql';
 import {error} from "winston";
@@ -19,6 +25,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(`/api/v${process.env.API_VERSION}`, healthCheck);
 app.use(`/`, HomeRoute);
+app.use(`/product`, ProductRoute);
+app.use(`/manufacture`, ManufactureRoute);
+app.use(`/comment`, CommentRoute);
+app.use(`/category`, CategoryRoute);
+app.use(`/order`, OrderRoute);
+app.use(`/user`, UserRoute);
+
 
 app.use(defaultErrorHandler);
 

@@ -1,7 +1,7 @@
 import AppError from '../errors/AppError';
 import mysql from "mysql";
 
-const logger = require('../utils/logger')('HomeController');
+const logger = require('../utils/logger')('ProductController');
 
 const indexAction = async (req, res, next) => {
     logger.log('info', `healthCheck: ${JSON.stringify(req.params)}`);
@@ -16,7 +16,7 @@ const indexAction = async (req, res, next) => {
 
         connection.connect();
 
-        connection.query('SELECT * from product_card INNER JOIN category where product_card.category=category.ID', null, (error, results, fields) => {
+        connection.query('SELECT * from product_card', null, (error, results, fields) => {
             if(error) {
                 console.log(error);
             }
@@ -25,11 +25,9 @@ const indexAction = async (req, res, next) => {
             }
 
         });
-
     } catch (err) {
         next(new AppError(err.message, 400));
     }
-
 };
 
 export default indexAction;
