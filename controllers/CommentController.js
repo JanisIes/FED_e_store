@@ -29,4 +29,29 @@ const getCommentByID = async (req, res, next) => {
     }
 };
 
-export {indexAction, getCommentByID};
+const addNewComment = async (req, res, next) => {
+    const {body} = req;
+    const {
+        title,
+        text,
+        product_id,
+        user_id,
+    } = body;
+
+    const sql = `INSERT INTO comment set ?`;
+    try {
+        const data = await makeQuery(sql, {
+            title,
+            text,
+            product_id,
+            user_id,
+        });
+        res.status(201).send(data);
+    } catch (error) {
+        next(new AppError(error.message, 400));
+    }
+
+};
+
+
+export {indexAction, getCommentByID, addNewComment};

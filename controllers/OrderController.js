@@ -29,4 +29,24 @@ const getOrderByID = async (req, res, next) => {
     }
 };
 
-export {indexAction, getOrderByID};
+const addNewOrder = async (req, res, next) => {
+    const {body} = req;
+    const {
+        sum,
+        user_id,
+    } = body;
+
+    const sql = `INSERT INTO orders set ?`;
+    try {
+        const data = await makeQuery(sql, {
+            sum,
+            user_id,
+        });
+        res.status(201).send(data);
+    } catch (error) {
+        next(new AppError(error.message, 400));
+    }
+
+};
+
+export {indexAction, getOrderByID, addNewOrder};

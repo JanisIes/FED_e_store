@@ -28,4 +28,32 @@ const getUserByID = async (req, res, next) => {
     }
 };
 
-export {indexAction, getUserByID};
+const addNewUser = async (req, res, next) => {
+    const {body} = req;
+    const {
+        first_name,
+        last_name,
+        password,
+        email,
+        image,
+        is_active,
+    } = body;
+
+    const sql = `INSERT INTO users set ?`;
+    try {
+        const data = await makeQuery(sql, {
+            first_name,
+            last_name,
+            password,
+            email,
+            image,
+            is_active,
+        });
+        res.status(201).send(data);
+    } catch (error) {
+        next(new AppError(error.message, 400));
+    }
+
+};
+
+export {indexAction, getUserByID, addNewUser};

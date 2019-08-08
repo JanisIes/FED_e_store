@@ -36,11 +36,11 @@ const addNewProduct = async (req, res, next) => {
         image,
         price,
         amount,
-        category_ID,
+        category_id,
         rate,
         vote,
         discount,
-        manufacture_ID,
+        manufacture_id,
     } = body;
 
     const sql = `INSERT INTO products set ?`;
@@ -51,11 +51,11 @@ const addNewProduct = async (req, res, next) => {
             image,
             price,
             amount,
-            category_ID,
+            category_id,
             rate,
             vote,
             discount,
-            manufacture_ID,
+            manufacture_id,
         });
         res.status(201).send(data);
     } catch (error) {

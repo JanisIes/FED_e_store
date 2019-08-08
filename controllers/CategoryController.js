@@ -29,4 +29,26 @@ const getCategoryByID = async (req, res, next) => {
     }
 };
 
-export {indexAction, getCategoryByID};
+const addNewCategory = async (req, res, next) => {
+    const {body} = req;
+    const {
+        title,
+        description,
+        category_id,
+    } = body;
+
+    const sql = `INSERT INTO category set ?`;
+    try {
+        const data = await makeQuery(sql, {
+            title,
+            description,
+            category_id,
+        });
+        res.status(201).send(data);
+    } catch (error) {
+        next(new AppError(error.message, 400));
+    }
+
+};
+
+export {indexAction, getCategoryByID, addNewCategory};
