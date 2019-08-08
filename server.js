@@ -10,10 +10,7 @@ import CategoryRoute from './routes/CategoryRoute';
 import OrderRoute from './routes/OrderRoute';
 import UserRoute from './routes/UserRoute';
 import defaultErrorHandler from './middlewares/defaultErrorHandler';
-import mysql from 'mysql';
 import {error} from "winston";
-
-
 
 
 const logger = require('./utils/logger')(process.env.APP_NAME);
@@ -25,12 +22,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(`/api/v${process.env.API_VERSION}`, healthCheck);
 app.use(`/`, HomeRoute);
-app.use(`/product`, ProductRoute);
-app.use(`/manufacture`, ManufactureRoute);
-app.use(`/comment`, CommentRoute);
-app.use(`/category`, CategoryRoute);
-app.use(`/order`, OrderRoute);
-app.use(`/user`, UserRoute);
+app.use(`/products`, ProductRoute);
+app.use(`/manufacturers`, ManufactureRoute);
+app.use(`/comments`, CommentRoute);
+app.use(`/categories`, CategoryRoute);
+app.use(`/orders`, OrderRoute);
+app.use(`/users`, UserRoute);
 
 
 app.use(defaultErrorHandler);
