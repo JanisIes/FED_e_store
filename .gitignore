@@ -11,3 +11,4 @@ yarn.lock
 data/*
 coverage/
 .nyc_output/
+public/

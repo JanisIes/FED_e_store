@@ -22,7 +22,7 @@ const getManufactureByID = async (req, res, next) => {
 
     try {
         const sql = 'SELECT * from manufacture WHERE ID = ?';
-        const data = await makeQuery(sql, req.params.manufactureID);
+        const data = await makeQuery(sql, manufactureID);
         res.json(data);
     } catch (err) {
         next(new AppError(err.message, 400));
@@ -31,17 +31,11 @@ const getManufactureByID = async (req, res, next) => {
 
 const addNewManufacturer = async (req, res, next) => {
     const {body} = req;
-    const {
-        title,
-        description,
-    } = body;
+
 
     const sql = `INSERT INTO manufacture set ?`;
     try {
-        const data = await makeQuery(sql, {
-            title,
-            description,
-        });
+        const data = await makeQuery(sql, body);
         res.status(201).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));

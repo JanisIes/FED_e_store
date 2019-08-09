@@ -22,7 +22,7 @@ const getOrderByID = async (req, res, next) => {
 
     try {
         const sql = 'SELECT * from users WHERE ID = ?';
-        const data = await makeQuery(sql, req.params.orderID);
+        const data = await makeQuery(sql, orderID);
         res.json(data);
     } catch (err) {
         next(new AppError(err.message, 400));
@@ -31,17 +31,10 @@ const getOrderByID = async (req, res, next) => {
 
 const addNewOrder = async (req, res, next) => {
     const {body} = req;
-    const {
-        sum,
-        user_id,
-    } = body;
 
     const sql = `INSERT INTO orders set ?`;
     try {
-        const data = await makeQuery(sql, {
-            sum,
-            user_id,
-        });
+        const data = await makeQuery(sql, body);
         res.status(201).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));

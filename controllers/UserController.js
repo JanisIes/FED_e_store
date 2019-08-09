@@ -21,7 +21,7 @@ const getUserByID = async (req, res, next) => {
 
     try {
         const sql = 'SELECT * from users WHERE ID = ?';
-        const data = await makeQuery(sql, req.params.userID);
+        const data = await makeQuery(sql, userID);
         res.json(data);
     } catch (err) {
         next(new AppError(err.message, 400));
@@ -30,25 +30,10 @@ const getUserByID = async (req, res, next) => {
 
 const addNewUser = async (req, res, next) => {
     const {body} = req;
-    const {
-        first_name,
-        last_name,
-        password,
-        email,
-        image,
-        is_active,
-    } = body;
 
     const sql = `INSERT INTO users set ?`;
     try {
-        const data = await makeQuery(sql, {
-            first_name,
-            last_name,
-            password,
-            email,
-            image,
-            is_active,
-        });
+        const data = await makeQuery(sql, body);
         res.status(201).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));

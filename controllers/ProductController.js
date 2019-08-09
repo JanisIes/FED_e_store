@@ -4,6 +4,11 @@ import {body} from "express-validator/check";
 
 const logger = require('../utils/logger')('ProductController');
 
+const getProductFromDB = (productID) => {
+    const sql = 'SELECT * from products WHERE ID = ?';
+    return makeQuery(sql, productID);
+};
+
 const indexAction = async (req, res, next) => {
 
     logger.log('info', `healthCheck: ${JSON.stringify(req.params)}`);
@@ -20,47 +25,58 @@ const getProductByID = async (req, res, next) => {
     logger.log('info', `healthCheck: ${JSON.stringify(req.params)}`);
     const {productID} = req.params;
     try {
-        const sql = 'SELECT * from products WHERE ID = ?';
-        const data = await makeQuery(sql, req.params.productID);
+        const data = await getProductFromDB(productID);
+        if (data.length === 0) {
+            return res.status(404).send('Product not found!');
+        }
         res.json(data);
     } catch (err) {
         next(new AppError(err.message, 400));
     }
 };
 
-const addNewProduct = async (req, res, next) => {
-    const {body} = req;
-    const {
-        title,
-        description,
-        image,
-        price,
-        amount,
-        category_id,
-        rate,
-        vote,
-        discount,
-        manufacture_id,
-    } = body;
+const modifyProduct = async (req, res, next) => {
+    const {productID} = req.params;
 
-    const sql = `INSERT INTO products set ?`;
+    if (productID) {
+        const data = await getProductFromDB(productID);
+        if (data.length === 0) {
+            return res.status(404).send('Product not found!');
+        }
+    }
+
+
+    const {body} = req;
+
+    const sql = `${!productID ? 'INSERT INTO' : 'UPDATE'} products SET ?
+                    ${!productID ? '' : 'WHERE ID = ?'
+    }`;
+
     try {
-        const data = await makeQuery(sql, {
-            title,
-            description,
-            image,
-            price,
-            amount,
-            category_id,
-            rate,
-            vote,
-            discount,
-            manufacture_id,
-        });
+        const data = await makeQuery(sql, [body, productID]);
         res.status(201).send(data);
+    } catch (error) {
+        next(new AppError(error.message, 400));
+    }
+};
+
+
+const deleteProduct = async (req, res, next) => {
+    const {productID} = req.params;
+
+    const data = await getProductFromDB(productID);
+    if (data.length === 0) {
+        return res.status(404).send('Product not found!');
+    }
+
+    const sql = `DELETE FROM products WHERE ID = ?`;
+    try {
+        const data = await makeQuery(sql, productID);
+        res.status(202).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));
     }
 
 };
-export {indexAction, getProductByID, addNewProduct};
+
+export {indexAction, getProductByID, modifyProduct, deleteProduct};
