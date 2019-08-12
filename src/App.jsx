@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import InputGroup from "./Components/InputGroup";
 import ButtonComponent from "./Components/ButtonComponent";
 import registerUser from "./Action/userAction";
+import { async } from "q";
 
 class App extends Component {
   state = {
@@ -21,7 +22,8 @@ class App extends Component {
     });
   };
 
-  onSubmit = event => {
+
+  onSubmit = async event => {
     event.preventDefault();
     let isError = false;
     for (const val in this.state) {
@@ -35,7 +37,7 @@ class App extends Component {
     if (isError) {
       return;
     }
-    const user = registerUser(this.state);
+    const user = await registerUser(this.state);
     this.setState({user});
   };
 
