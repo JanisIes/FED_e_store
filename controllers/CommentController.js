@@ -3,6 +3,11 @@ import makeQuery from "../service/MysqlConnection";
 
 const logger = require('../utils/logger')('CommentController');
 
+const getProductFromDB = (commentID) => {
+    const sql = 'SELECT * from comment WHERE ID = ?';
+    return makeQuery(sql, commentID);
+};
+
 const indexAction = async (req, res, next) => {
     logger.log('info', `healthCheck: ${JSON.stringify(req.params)}`);
     try {
@@ -29,12 +34,24 @@ const getCommentByID = async (req, res, next) => {
     }
 };
 
-const addNewComment = async (req, res, next) => {
+const modifyComment = async (req, res, next) => {
+    const {commentID} = req.params;
+
+    if (commentID) {
+        const data = await getProductFromDB(commentID);
+        if (data.length === 0) {
+            return res.status(404).send('Comment not found!');
+        }
+    }
+
     const {body} = req;
 
-    const sql = `INSERT INTO comment set ?`;
+    const sql = `${!commentID ? 'INSERT INTO' : 'UPDATE'} comment SET ?
+                    ${!commentID ? '' : 'WHERE ID = ?'
+    }`;
+
     try {
-        const data = await makeQuery(sql, body);
+        const data = await makeQuery(sql, [body, commentID]);
         res.status(201).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));
@@ -52,12 +69,12 @@ const deleteComment = async (req, res, next) => {
 
     const sql = `DELETE FROM comment WHERE ID = ?`;
     try {
-        await makeQuery(sql, commentID);
-        res.status(200).send('Comment deleted!');
+        const data = await makeQuery(sql, commentID);
+        res.status(202).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));
     }
 
 };
 
-export {indexAction, getCommentByID, addNewComment};
+export {indexAction, getCommentByID, modifyComment, deleteComment};

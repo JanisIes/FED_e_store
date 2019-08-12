@@ -34,13 +34,25 @@ const getCategoryByID = async (req, res, next) => {
     }
 };
 
-const addNewCategory = async (req, res, next) => {
+const modifyCategory = async (req, res, next) => {
+    const {categoryID} = req.params;
+
+    if (categoryID) {
+        const data = await getProductFromDB(categoryID);
+        if (data.length === 0) {
+            return res.status(404).send('Category not found!');
+        }
+    }
+
     const {body} = req;
 
 
-    const sql = `INSERT INTO category set ?`;
+    const sql = `${!categoryID ? 'INSERT INTO' : 'UPDATE'} category SET ?
+                    ${!categoryID ? '' : 'WHERE ID = ?'
+    }`;
+
     try {
-        const data = await makeQuery(sql, body);
+        const data = await makeQuery(sql, [body, categoryID]);
         res.status(201).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));
@@ -53,17 +65,17 @@ const deleteCategory = async (req, res, next) => {
 
     const data = await getProductFromDB(categoryID);
     if (data.length === 0) {
-        return res.status(404).send('Page not found!');
+        return res.status(404).send('Category not found!');
     }
 
     const sql = `DELETE FROM category WHERE ID = ?`;
     try {
-        await makeQuery(sql, categoryID);
-        res.status(200).send('Category deleted!');
+        const data = await makeQuery(sql, categoryID);
+        res.status(202).send(data);
     } catch (error) {
         next(new AppError(error.message, 400));
     }
 
 };
 
-export {indexAction, getCategoryByID, addNewCategory, deleteCategory};
+export {indexAction, getCategoryByID, modifyCategory, deleteCategory};
