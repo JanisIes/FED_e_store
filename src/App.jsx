@@ -35,12 +35,15 @@ class App extends Component {
     if (isError) {
       return;
     }
-    registerUser(this.state);
+    const user = registerUser(this.state);
+    this.setState({user});
   };
 
   render() {
+    const {user} = this.state;
     return (
       <div>
+      {!user ? (
         <div className="row">
           <div className="col">
             <h3>GitLab.com</h3>
@@ -60,7 +63,7 @@ class App extends Component {
             <p>GitLab.com Terms.</p>
           </div>
           <div className="col">
-            <form method="POST" onSubmit={this.onSubmit}>
+            <form method="post" onSubmit={this.onSubmit}>
               <InputGroup
                 name="firstName"
                 isError={this.state.is_error_firstName}
@@ -98,6 +101,29 @@ class App extends Component {
             </form>
           </div>
         </div>
+        ) : (
+          <div>
+          {user.isError ? "Error" : (
+            <div>
+            <p>
+              <i>First Name</i>
+              {user.firstName}
+            </p>
+            <p>
+              <i>Last Name</i>
+              {user.lastName}
+            </p>
+            <p>
+              <i>Email</i>
+              {user.email}
+            </p>
+            <p>
+              <i>Registered </i>
+              {user.createdAt}
+            </p>
+            </div>
+          )}</div>
+        )}
       </div>
     );
   }

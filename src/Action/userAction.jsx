@@ -1,9 +1,13 @@
 import axios from "axios";
 
 const registerUser = async user => {
-  const res = await axios.post("/user/", user);
-  if(res.headers && res.headers.status === 200) {
-      console.log("success");
+  try {
+    const res = await axios.post("http://localhost:3001/users/", user);
+    if (res && res.status === 201) {
+      return res.data;
+    }
+  } catch (err) {
+    return { isError: err.message };
   }
 };
 
