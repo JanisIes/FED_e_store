@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import './utils/dotenv';
 import fileUpload from 'express-fileupload';
+import cors from 'cors';
 import healthCheck from './routes/healthCheck';
 import HomeRoute from './routes/HomeRoute';
 import ProductRoute from './routes/ProductRoute';
@@ -19,6 +20,8 @@ const logger = require('./utils/logger')(process.env.APP_NAME);
 
 
 const app = express();
+
+app.use(cors());
 
 app.use(
     fileUpload({
